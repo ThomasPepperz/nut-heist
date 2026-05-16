@@ -1,0 +1,43 @@
+# Unity (from https://github.com/github/gitignore/blob/main/Unity.gitignore — trimmed / tailored)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Uu]serSettings/
+/[Mm]emoryCaptures/
+[Rr]ecordings/
+*.log
+*.stacktrace
+.utmp/
+*.blend1
+*.blend1.meta
+
+ExportedObj/
+.consulo/
+
+# Auto-generated IDE / toolchain
+*.csproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.pidb.meta
+.idea/
+*.DotSettings.user
+.vscode/
+.gradle/
+
+# Unity cloud / cache
+**/BurstCache/
+
+# Rider
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+.DS_Store
+
+# Local archives (source is extracted in repo)
+*.zip
+_extract/

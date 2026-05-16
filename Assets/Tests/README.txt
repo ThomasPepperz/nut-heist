@@ -1,0 +1,1 @@
+Run Edit Mode tests: Unity menu Window → General → Test Runner (Edit Mode tab). Optional CLI: Unity -batchmode -quit -projectPath <repo> -runTests -testPlatform EditMode -testResults ./TestResults.xml
