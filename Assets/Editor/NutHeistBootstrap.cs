@@ -40,14 +40,19 @@ namespace NutHeist.EditorTools
 
             PrepareSceneAsset();
             GameObject sunlight = EnsureDirectionalSun();
-            BlockoutYard();
+            _ = sunlight;
+
+            // Procedurally author the full world per the World Design Addendum
+            // (yard, fence, trees, garden, pool, shed, two-story brick house with
+            // 10 entry points, six rooms + basement lab, and the vent network).
+            HouseEnvironmentBuilder.BuildAll();
+
             GameObject squirrel = BuildSquirrel(out Transform pivot);
             BuildNutPickupPrefabAsset();
             BuildSharedServices();
             BuildHudOverlay();
             CinemachineComposer.BootstrapCameras(pivot, squirrel.GetComponent<SquirrelController>());
             EnsureWorldSpawner();
-            AuthorTreeSample(Vector3.Scale(new Vector3(-12f, 1f, 12f), new Vector3(3f, 1f, 3f))); // quadrant sample
 
             PrefabUtility.SaveAsPrefabAsset(squirrel, SquirrelPrefabPath);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
@@ -156,27 +161,6 @@ namespace NutHeist.EditorTools
             sun.transform.rotation = Quaternion.Euler(50f, -35f, 0f);
             Undo.RegisterCreatedObjectUndo(sun, "Sun bootstrap");
             return sun;
-        }
-
-        static void BlockoutYard()
-        {
-            if (GameObject.Find("Terrain_YardPlate"))
-            {
-                return;
-            }
-
-            GameObject plate = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            plate.name = "Terrain_YardPlate";
-            plate.transform.localScale = new Vector3(120f, 0.3f, 120f);
-            plate.transform.position = new Vector3(0f, -0.2f, 0f);
-
-            Undo.RegisterCreatedObjectUndo(plate, "YardPlate");
-
-            GameObject houseProto = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            houseProto.name = "House_Mass_Box";
-            houseProto.transform.localScale = new Vector3(24f, 12f, 18f);
-            houseProto.transform.position = new Vector3(8f, 6f, 4f);
-            Undo.RegisterCreatedObjectUndo(houseProto, "HouseBox");
         }
 
         static GameObject BuildSquirrel(out Transform pivot)
@@ -323,22 +307,6 @@ namespace NutHeist.EditorTools
             sos.ApplyModifiedPropertiesWithoutUndo();
 
             Undo.RegisterCreatedObjectUndo(spawner.gameObject, "WorldSpawner");
-        }
-
-        static void AuthorTreeSample(Vector3 position)
-        {
-            if (GameObject.Find("Oak_BlockoutCylinder"))
-            {
-                return;
-            }
-
-            GameObject tree = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            tree.name = "Oak_BlockoutCylinder";
-            tree.transform.position = position + Vector3.up * 12f;
-            tree.transform.localScale = new Vector3(4f, ScaleManager.ToUnits(12f), 4f);
-            tree.tag = GameplayTags.Climbable;
-            tree.EnsureComponent<ClimbableSurface>();
-            Undo.RegisterCreatedObjectUndo(tree, "Tree");
         }
 
         static void UpsertSceneInBuildSettings()

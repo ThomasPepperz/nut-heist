@@ -14,8 +14,9 @@ First open (recommended)
 1. Add this repository root via **Unity Hub → Open** (Unity project folders are beside `Assets/`, `Packages/`, `ProjectSettings/`).
 2. Let Package Manager fetch **URP**, **Input System**, **Cinemachine 2**, **ProBuilder**, and **Animation Rigging**.
 3. If Unity asks about **Active Input Handling**, choose **New Input System** or **Both** (`ProjectSettings.asset` prefers the new Input System).
-4. Use menu **`Nut Heist → Full Project Setup`** to create Tags/Layers, import TMP essentials when available, scaffold `MainLevel`, prefabs (including squirrel + nut), and baseline URP assets.
-5. Open **`Assets/Scenes/MainLevel.unity`** and press **Play**.
+4. Use menu **`Nut Heist → Full Project Setup`** to create Tags/Layers, import TMP essentials when available, scaffold `MainLevel`, prefabs (including squirrel + nut), and baseline URP assets. This also procedurally authors the full world (yard, fence, four trees, garden beds, pool, shed, two-story brick house with 10 exterior entry points, six rooms + basement lab, branching vent network) at squirrel scale.
+5. Use menu **`Nut Heist → Build House World`** to regenerate just the world (`HouseWorld_Root`) without touching the squirrel/HUD/cameras. Idempotent.
+6. Open **`Assets/Scenes/MainLevel.unity`** and press **Play**.
 
 Builds (`perf-build`)
 -----------
