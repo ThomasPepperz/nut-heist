@@ -1,34 +1,49 @@
-using NutHeist.Core;
+using NutHeist.Player;
 using UnityEngine;
 
 namespace NutHeist.Environment
 {
-    /// <summary>Simple torque-less door hinge stand-in activated by squirrel proximity.</summary>
+    /// <summary>
+    /// Press E to open/close a door, vent grate, or hatch.
+    /// Drives localRotation with a SmoothStep lerp — no tween library needed.
+    /// Set openRotationOffset in the Inspector (e.g. (0, 90, 0) for a door
+    /// that swings 90° on the Y axis).
+    /// </summary>
     public sealed class Openable : Interactable
     {
-        [SerializeField]
-        float openDegreesPerSecond = 35f;
+        [SerializeField] Vector3 openRotationOffset = new Vector3(0f, 90f, 0f);
+        [SerializeField] float animSeconds = 0.35f;
 
-        [SerializeField]
-        float maximumYaw = 70f;
+        bool open;
+        Quaternion closedRot;
+        Quaternion openRot;
+        // Normalised animation progress, 0→1, reset to 0 on each toggle.
+        float animT = 1f;
 
-        float _progress;
-
-        void OnTriggerStay(Collider colliderDetected)
+        void Awake()
         {
-            if (!HasTier(InteractionTier.Openable))
-            {
-                return;
-            }
+            closedRot = transform.localRotation;
+            openRot = closedRot * Quaternion.Euler(openRotationOffset);
+        }
 
-            if (!colliderDetected.CompareTag(GameplayTags.Player))
-            {
-                return;
-            }
+        public override string GetPrompt() => open ? "Close" : "Open";
 
-            _progress += openDegreesPerSecond * Time.deltaTime;
-            Quaternion target = Quaternion.Euler(0f, Mathf.Clamp(_progress, 0f, maximumYaw), 0f);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, target, Time.deltaTime * 12f);
+        public override void Activate(SquirrelController squirrel)
+        {
+            open = !open;
+            animT = 0f;
+        }
+
+        void Update()
+        {
+            if (animT >= 1f) return;
+            animT = Mathf.Min(animT + Time.deltaTime / animSeconds, 1f);
+            // SmoothStep eases in and out so it doesn't pop or overshoot.
+            float t = Mathf.SmoothStep(0f, 1f, animT);
+            transform.localRotation = Quaternion.Slerp(
+                open ? closedRot : openRot,
+                open ? openRot : closedRot,
+                t);
         }
     }
 }

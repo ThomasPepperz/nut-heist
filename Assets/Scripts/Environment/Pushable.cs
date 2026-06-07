@@ -2,39 +2,27 @@ using UnityEngine;
 
 namespace NutHeist.Environment
 {
-    /// <summary>Physics-friendly prop that can absorb light forces from scripted events.</summary>
+    /// <summary>
+    /// Marks a rigidbody as squirrel-pushable.
+    /// The actual impulse is applied by SquirrelController.OnControllerColliderHit
+    /// whenever the squirrel walks into this object — no button press required.
+    /// Adjust pushResistance to make heavier objects harder to slide.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     public sealed class Pushable : Interactable
     {
-        Rigidbody _body;
+        [SerializeField] float pushResistance = 1f;
+
+        public float PushResistance => pushResistance;
 
         void Awake()
         {
-            _body = GetComponent<Rigidbody>();
-            _body.interpolation = RigidbodyInterpolation.Interpolate;
-            _body.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            // Mirror the authoring mass onto the Rigidbody so physics weight
+            // and the carry-weight check both use the same number.
+            GetComponent<Rigidbody>().mass = MassKg;
         }
 
-#if UNITY_EDITOR
-        void Reset()
-        {
-            if (!TryGetComponent(out Rigidbody body))
-            {
-                body = gameObject.AddComponent<Rigidbody>();
-            }
-
-            body.mass = Mathf.Clamp(MassKg, 0.1f, 500f);
-        }
-#endif
-
-        /// <summary>Called by scripted interactions.</summary>
-        public void Boost(Vector3 worldImpulse)
-        {
-            _body ??= GetComponent<Rigidbody>();
-            if (!_body.isKinematic)
-            {
-                _body.AddForce(worldImpulse, ForceMode.Impulse);
-            }
-        }
+        // Pushing is passive — no prompt shown.
+        public override string GetPrompt() => string.Empty;
     }
 }

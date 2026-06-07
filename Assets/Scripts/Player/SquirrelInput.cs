@@ -11,10 +11,13 @@ namespace NutHeist.Player
         public bool SprintHeld { get; private set; }
         public bool JumpHeld { get; private set; }
         public bool JumpPressedThisFrame { get; private set; }
+        public bool InteractPressedThisFrame { get; private set; }
+        public bool CrouchHeld { get; private set; }
 
         void Update()
         {
             JumpPressedThisFrame = false;
+            InteractPressedThisFrame = false;
 
             Keyboard keyboard = Keyboard.current;
             Mouse mouse = Mouse.current;
@@ -23,6 +26,7 @@ namespace NutHeist.Player
                 Move = Vector2.zero;
                 SprintHeld = false;
                 JumpHeld = false;
+                CrouchHeld = false;
                 Look = Vector2.zero;
                 return;
             }
@@ -38,6 +42,8 @@ namespace NutHeist.Player
             SprintHeld = keyboard.leftShiftKey.isPressed;
             JumpHeld = keyboard.spaceKey.isPressed;
             JumpPressedThisFrame = keyboard.spaceKey.wasPressedThisFrame;
+            InteractPressedThisFrame = keyboard.eKey.wasPressedThisFrame;
+            CrouchHeld = keyboard.cKey.isPressed || keyboard.leftCtrlKey.isPressed;
 
             if (mouse != null)
             {

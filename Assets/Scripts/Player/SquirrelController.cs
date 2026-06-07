@@ -369,6 +369,22 @@ namespace NutHeist.Player
                 }
             }
 
+            // Apply push force to any Pushable rigidbody the squirrel walks into.
+            // CharacterController doesn't push rigidbodies automatically — this is the fix.
+            Rigidbody hitRb = hit.collider.attachedRigidbody;
+            if (hitRb != null && !hitRb.isKinematic && hit.moveDirection.y < 0.3f)
+            {
+                Pushable pushable = hit.collider.GetComponentInParent<Pushable>();
+                if (pushable != null)
+                {
+                    float force = planarVelocity.magnitude / Mathf.Max(pushable.PushResistance, 0.1f);
+                    hitRb.AddForceAtPosition(
+                        hit.moveDirection * force * 0.5f,
+                        hit.point,
+                        ForceMode.Impulse);
+                }
+            }
+
             if (hit.normal.y > 0.65f && verticalVelocity <= -11f && SoundManager.Resolve())
             {
                 SoundManager.Resolve().PlayLandingHeavy();
