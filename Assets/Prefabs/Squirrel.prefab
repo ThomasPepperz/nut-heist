@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3936077868507683200}
   - component: {fileID: 4398853546500565393}
   - component: {fileID: 6519754701689971149}
+  - component: {fileID: 1122334455667788991}
   m_Layer: 0
   m_Name: Squirrel
   m_TagString: Player
@@ -202,6 +203,21 @@ MonoBehaviour:
   cameraTarget: {fileID: 7325225882941768924}
   roamCamera: {fileID: 0}
   climbCamera: {fileID: 0}
+--- !u!114 &1122334455667788991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056791266168822795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a2b9d3e8f15a7c6d0e2f4b8a1c3e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NutHeist.Runtime::NutHeist.Player.CarrySystem
+  carryOffset: {x: 0, y: 0.18, z: 0.22}
+  carryLerpSpeed: 18
+  maxCarryMassKg: 10
 --- !u!1 &5471377683751631694
 GameObject:
   m_ObjectHideFlags: 0

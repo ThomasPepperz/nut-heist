@@ -47,6 +47,7 @@ namespace NutHeist.EditorTools
             BuildHudOverlay();
             CinemachineComposer.BootstrapCameras(pivot, squirrel.GetComponent<SquirrelController>());
             EnsureWorldSpawner();
+            EnsureInteractionManager();
             AuthorTreeSample(Vector3.Scale(new Vector3(-12f, 1f, 12f), new Vector3(3f, 1f, 3f))); // quadrant sample
 
             PrefabUtility.SaveAsPrefabAsset(squirrel, SquirrelPrefabPath);
@@ -207,6 +208,7 @@ namespace NutHeist.EditorTools
             squirrelBody.EnsureComponent<ClimbingSystem>();
             squirrelBody.EnsureComponent<SquirrelController>();
             squirrelBody.EnsureComponent<SquirrelAnimator>();
+            squirrelBody.EnsureComponent<CarrySystem>();
 
             Transform capsuleChild = squirrelBody.transform.Find("VisualCapsule_Proxy");
             if (!capsuleChild)
@@ -307,7 +309,16 @@ namespace NutHeist.EditorTools
             }
         }
 
-        static void EnsureWorldSpawner()
+        static void EnsureInteractionManager()
+        {
+            InteractionManager mgr = UnityEngine.Object.FindFirstObjectByType<InteractionManager>();
+            if (!mgr)
+            {
+                new GameObject("NutHeistInteractionManager").EnsureComponent<InteractionManager>();
+            }
+        }
+
+                static void EnsureWorldSpawner()
         {
             WorldSpawner spawner = UnityEngine.Object.FindFirstObjectByType<WorldSpawner>();
             if (!spawner)
