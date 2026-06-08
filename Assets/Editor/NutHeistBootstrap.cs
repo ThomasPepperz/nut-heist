@@ -210,6 +210,7 @@ namespace NutHeist.EditorTools
             squirrelBody.EnsureComponent<SquirrelController>();
             squirrelBody.EnsureComponent<SquirrelAnimator>();
             squirrelBody.EnsureComponent<CarrySystem>();
+            squirrelBody.EnsureComponent<NutHeist.AI.NoiseEmitter>();
 
             Transform capsuleChild = squirrelBody.transform.Find("VisualCapsule_Proxy");
             if (!capsuleChild)
@@ -331,6 +332,12 @@ namespace NutHeist.EditorTools
             if (!ui)
             {
                 new GameObject("NutHeist_GameLoopUI").EnsureComponent<NutHeist.UI.GameLoopUI>();
+            }
+
+            NutHeist.AI.GuardAlertNetwork network = UnityEngine.Object.FindFirstObjectByType<NutHeist.AI.GuardAlertNetwork>();
+            if (!network)
+            {
+                new GameObject("NutHeist_GuardAlertNetwork").EnsureComponent<NutHeist.AI.GuardAlertNetwork>();
             }
         }
 

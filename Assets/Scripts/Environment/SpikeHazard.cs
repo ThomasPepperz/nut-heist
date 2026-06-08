@@ -1,4 +1,5 @@
 using NutHeist.Audio;
+using NutHeist.Core;
 using NutHeist.Player;
 using UnityEngine;
 
@@ -7,11 +8,10 @@ namespace NutHeist.Environment
     [RequireComponent(typeof(BoxCollider))]
     public sealed class SpikeHazard : MonoBehaviour
     {
-        [SerializeField]
-        float knockStrength = 6f;
-
-        [SerializeField]
-        float stunDuration = 0.5f;
+        [SerializeField] float knockStrength = 6f;
+        [SerializeField] float stunDuration = 0.5f;
+        // When true the spikes kill instantly rather than just knocking back.
+        [SerializeField] bool lethal = false;
 
         void Reset()
         {
@@ -23,6 +23,12 @@ namespace NutHeist.Environment
             SquirrelController squirrelLocomotor = other.GetComponentInParent<SquirrelController>();
             if (!squirrelLocomotor)
             {
+                return;
+            }
+
+            if (lethal)
+            {
+                GameLoop.Instance?.NotifyCaught();
                 return;
             }
 

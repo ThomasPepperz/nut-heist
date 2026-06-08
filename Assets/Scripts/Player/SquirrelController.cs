@@ -39,6 +39,13 @@ namespace NutHeist.Player
         public float groundCheckRadius = 0.1f;
         public LayerMask groundLayer = ~0;
 
+        [Header("Crouch")]
+        [SerializeField] float crouchSpeedScale = 0.45f;
+        [SerializeField] float crouchHeightScale = 0.55f;
+        float standingHeight;
+        float standingCenterY;
+        bool wasCrouching;
+
         [Header("Swim / Vent")]
         [SerializeField] float swimForwardSpeed = 3f;
         [SerializeField] float ventForwardSpeed = 5f;
@@ -98,6 +105,8 @@ namespace NutHeist.Player
             climbing.AssignMotor(this);
 
             characterController.skinWidth = 0.01f;
+            standingHeight  = characterController.height;
+            standingCenterY = characterController.center.y;
             mainCamera = Camera.main;
             try
             {
@@ -156,8 +165,21 @@ namespace NutHeist.Player
                 mainCamera = Camera.main;
             }
 
+            TickCrouch();
             RotateModelTowards(planarWishDir());
             squirrelAnimatorOptional?.Pump(this, climbing.IsActive);
+        }
+
+        void TickCrouch()
+        {
+            bool crouching = squirrelInput.CrouchHeld;
+            if (crouching == wasCrouching) return;
+            wasCrouching = crouching;
+
+            float targetHeight  = crouching ? standingHeight  * crouchHeightScale : standingHeight;
+            float targetCenterY = crouching ? standingCenterY * crouchHeightScale : standingCenterY;
+            characterController.height   = targetHeight;
+            characterController.center   = new Vector3(0f, targetCenterY, 0f);
         }
 
         void FixedUpdate()
@@ -263,7 +285,9 @@ namespace NutHeist.Player
 
         void PlanarWalking(float dt)
         {
-            Vector3 wishSpeed = planarWishDir() * (squirrelInput.SprintHeld ? sprintSpeed : moveSpeed);
+            float topSpeed = squirrelInput.SprintHeld ? sprintSpeed : moveSpeed;
+            if (squirrelInput.CrouchHeld) topSpeed *= crouchSpeedScale;
+            Vector3 wishSpeed = planarWishDir() * topSpeed;
 
             planarVelocity.y = 0f;
 
@@ -397,9 +421,10 @@ namespace NutHeist.Player
                 }
             }
 
-            if (hit.normal.y > 0.65f && verticalVelocity <= -11f && SoundManager.Resolve())
+            if (hit.normal.y > 0.65f && verticalVelocity <= -11f)
             {
-                SoundManager.Resolve().PlayLandingHeavy();
+                SoundManager.Resolve()?.PlayLandingHeavy();
+                GetComponent<NutHeist.AI.NoiseEmitter>()?.EmitLandingBurst();
             }
         }
 

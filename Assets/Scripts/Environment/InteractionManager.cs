@@ -26,10 +26,17 @@ namespace NutHeist.Environment
 
             FocusedInteractable = FindBest();
 
-            if (squirrel.InputReader.InteractPressedThisFrame)
+            var carry = squirrel.GetComponent<CarrySystem>();
+
+            if (squirrel.InputReader.ThrowPressedThisFrame && carry != null && carry.IsCarrying)
+            {
+                Camera cam = Camera.main;
+                Vector3 throwDir = cam ? cam.transform.forward : squirrel.transform.forward;
+                carry.Throw(throwDir + Vector3.up * 0.25f);
+            }
+            else if (squirrel.InputReader.InteractPressedThisFrame)
             {
                 // While carrying, E always drops — don't also fire Activate.
-                var carry = squirrel.GetComponent<CarrySystem>();
                 if (carry != null && carry.IsCarrying)
                 {
                     carry.Drop();

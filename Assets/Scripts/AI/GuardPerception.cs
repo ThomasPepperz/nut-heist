@@ -19,15 +19,26 @@ namespace NutHeist.AI
             if (playerObj) playerTransform = playerObj.transform;
         }
 
+        NoiseEmitter playerNoise;
+
         // Returns 0 (undetected) → 1 (fully detected).
         public float Evaluate()
         {
             if (!playerTransform) return 0f;
 
+            // Cache NoiseEmitter lazily (player might spawn after guard).
+            if (playerNoise == null)
+                playerNoise = playerTransform.GetComponent<NoiseEmitter>();
+
             Vector3 toPlayer = playerTransform.position - EyePosition;
             float dist = toPlayer.magnitude;
 
-            if (dist <= hearingRadius) return 1f;
+            // Noise-based hearing: dynamic radius from NoiseEmitter beats fixed hearingRadius.
+            float effectiveHearing = playerNoise != null
+                ? Mathf.Max(hearingRadius, playerNoise.CurrentRadius)
+                : hearingRadius;
+
+            if (dist <= effectiveHearing) return 1f;
             if (dist > visionRange) return 0f;
 
             float angle = Vector3.Angle(transform.forward, toPlayer);
@@ -39,7 +50,9 @@ namespace NutHeist.AI
 
             float distFactor = 1f - (dist / visionRange);
             float angleFactor = 1f - (angle / visionHalfAngle);
-            return Mathf.Clamp01((distFactor + angleFactor) * 0.5f);
+            // HidingSpot multiplier reduces visibility when player is concealed.
+            float visibility = NutHeist.Environment.HidingSpot.CurrentVisibility;
+            return Mathf.Clamp01((distFactor + angleFactor) * 0.5f) * visibility;
         }
 
         Vector3 EyePosition => transform.position + Vector3.up * 1.4f;

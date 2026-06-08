@@ -37,7 +37,13 @@ namespace NutHeist.AI
         {
             agent = GetComponent<NavMeshAgent>();
             perception = GetComponent<GuardPerception>();
+            GuardAlertNetwork.Instance?.Register(this);
         }
+
+        void OnDestroy() => GuardAlertNetwork.Instance?.Deregister(this);
+
+        void OnEnable()  => GuardAlertNetwork.Instance?.Register(this);
+        void OnDisable() => GuardAlertNetwork.Instance?.Deregister(this);
 
         void Update()
         {
@@ -83,6 +89,7 @@ namespace NutHeist.AI
                 alertLevel = AlertLevel.Alerted;
                 agent.speed = chaseSpeed;
                 RecordLastKnown();
+                GuardAlertNetwork.Instance?.Broadcast(this, lastKnownPlayerPos);
                 return;
             }
 

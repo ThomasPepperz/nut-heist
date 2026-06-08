@@ -73,6 +73,26 @@ namespace NutHeist.Player
             heldColliders = null;
         }
 
+        // F key: launch the held prop as a distraction. ImpactNoise on the prop
+        // will alert guards when it lands.
+        [SerializeField] float throwForce = 14f;
+        public void Throw(Vector3 worldDirection)
+        {
+            if (!IsCarrying || !heldRb) { Drop(); return; }
+
+            foreach (var col in heldColliders) if (col) col.enabled = true;
+
+            // Arm impact noise if the prop has one.
+            heldItem.GetComponent<NutHeist.Environment.ImpactNoise>()?.Arm();
+
+            heldRb.isKinematic = false;
+            heldRb.linearVelocity = worldDirection.normalized * throwForce;
+
+            heldItem = null;
+            heldRb = null;
+            heldColliders = null;
+        }
+
         void LateUpdate()
         {
             if (!IsCarrying) return;
