@@ -72,6 +72,18 @@ namespace NutHeist.Player
         public Vector3 HorizontalVelocity => planarVelocity;
         public float VerticalSpeed => verticalVelocity;
 
+        public MovementState CurrentState
+        {
+            get
+            {
+                if (Time.time < stunUntil) return MovementState.Stunned;
+                if (climbing.IsActive)     return MovementState.Climbing;
+                if (swimOverlaps > 0)      return MovementState.Swimming;
+                if (ventOverlaps > 0)      return MovementState.Venting;
+                return MovementState.Walking;
+            }
+        }
+
         /// <summary>Airflow impulses applied this physics step.</summary>
         public Vector3 ExternalImpulse;
 

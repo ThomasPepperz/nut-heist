@@ -48,6 +48,7 @@ namespace NutHeist.EditorTools
             CinemachineComposer.BootstrapCameras(pivot, squirrel.GetComponent<SquirrelController>());
             EnsureWorldSpawner();
             EnsureInteractionManager();
+            EnsureGameLoop();
             AuthorTreeSample(Vector3.Scale(new Vector3(-12f, 1f, 12f), new Vector3(3f, 1f, 3f))); // quadrant sample
 
             PrefabUtility.SaveAsPrefabAsset(squirrel, SquirrelPrefabPath);
@@ -315,6 +316,21 @@ namespace NutHeist.EditorTools
             if (!mgr)
             {
                 new GameObject("NutHeistInteractionManager").EnsureComponent<InteractionManager>();
+            }
+        }
+
+        static void EnsureGameLoop()
+        {
+            NutHeist.Core.GameLoop loop = UnityEngine.Object.FindFirstObjectByType<NutHeist.Core.GameLoop>();
+            if (!loop)
+            {
+                new GameObject("NutHeist_GameLoop").EnsureComponent<NutHeist.Core.GameLoop>();
+            }
+
+            NutHeist.UI.GameLoopUI ui = UnityEngine.Object.FindFirstObjectByType<NutHeist.UI.GameLoopUI>();
+            if (!ui)
+            {
+                new GameObject("NutHeist_GameLoopUI").EnsureComponent<NutHeist.UI.GameLoopUI>();
             }
         }
 
