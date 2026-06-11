@@ -6,7 +6,12 @@ Third-person squirrel platformer foundation: movement + climb + Cinemachine came
 Requirements
 -----------
 
-- Unity **6000.0.x** (project version file targets **6000.0.52f1**; Hub will propose matching editor install if yours differs).
+- Unity **6000.4.x** (project version file targets **6000.4.7f1**; Hub will propose matching editor install if yours differs).
+
+AI assistant / Claude integration
+-----------
+
+See **`UNITY_AI_SETUP.md`** for connecting Claude (or another MCP client) to this project — live Editor control via a Unity MCP bridge, AI 3D-asset generation, and the git-based code loop. Short version: no Unity API key exists or is needed.
 
 First open (recommended)
 -----------

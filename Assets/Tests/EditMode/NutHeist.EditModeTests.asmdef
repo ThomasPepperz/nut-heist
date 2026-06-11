@@ -2,7 +2,7 @@
   "name": "NutHeist.EditModeTests",
   "rootNamespace": "NutHeist.Tests",
   "references": [
-    "GUID:f8e4c2a19b3d4e5f6789012345678ab1"
+    "GUID:055a0fb1f39f42f5a6ab6410b5afcece"
   ],
   "includePlatforms": [
     "Editor"
